@@ -1,0 +1,54 @@
+body {
+  background-color: #f8f9fa;
+  padding: 50px;
+}
+
+.container {
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 30px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  text-align: center;
+  color: #007bff;
+}
+
+form {
+  max-width: 400px;
+  margin: auto;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  font-weight: bold;
+}
+
+button {
+  background-color: #007bff;
+  color: #ffffff;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+#drop-area {
+  border: 2px dashed #007bff;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+}
+
+#drop-area input {
+  display: none;
+}
+
+.drag-text {
+  color: #007bff;
+}

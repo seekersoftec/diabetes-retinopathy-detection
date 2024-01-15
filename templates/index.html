@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diabetes Retinopathy Detection</title>
+
+    <!-- External Dropzone library -->
+    <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
+
+    <!-- Other external libraries -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8sh+WyFUb1a4P1mdgxiH9j7c14A5zl9v4PMSF" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/styles.css') }}">
+
+    <style>
+        /* Custom styles for the prediction table */
+        #prediction table {
+            width: 100%;
+            margin-top: 10px;
+            border-collapse: collapse;
+        }
+
+        #prediction th,
+        #prediction td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        #prediction th {
+            background-color: #f2f2f2;
+        }
+
+        /* Custom styles for confidence levels */
+        .low-confidence {
+            color: red;
+            font-weight: bold;
+        }
+
+        .medium-confidence {
+            color: orange;
+            font-weight: bold;
+        }
+
+        .high-confidence {
+            color: green;
+            font-weight: bold;
+        }
+
+        /* Custom styles for class values */
+        .referable {
+            color: red;
+            font-weight: bold;
+        }
+
+        .non-referable {
+            color: green;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="mt-5 mb-5">Diabetes Retinopathy Detection</h1>
+
+        <!-- Dropzone form -->
+        <form action="http://localhost:8000/api/v1/image-classify" class="dropzone" id="awesomeDropzone"></form>
+
+        <!-- Clear Form button -->
+        <button type="button" class="btn btn-secondary mt-3" onclick="clearForm()">Clear All Files</button>
+
+        <!-- Prediction display using a table -->
+        <div id="prediction" class="mt-3" style="display: none;">
+            <h3>Prediction Screener:</h3>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">File</th>
+                        <th scope="col">Class</th>
+                        <th scope="col">Confidence</th>
+                    </tr>
+                </thead>
+                <tbody id="predictionBody">
+                    <!-- Data will be dynamically added here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Function to display prediction
+        function displayPrediction(data) {
+            const predictionBody = document.getElementById("predictionBody");
+
+            // Map class values to human-readable values
+            const classMap = {
+                "Referable": "Referable",
+                "Non_Referable": "Non-Referable"
+            };
+
+            const columns = ["filename", "class", "confidence"]; // Specify the desired columns
+
+            // Apply different styles for confidence levels
+            const confidenceValue = parseFloat(data["confidence"]);
+            let confidenceClass = "low-confidence";
+
+            if (confidenceValue >= 70) {
+                confidenceClass = "high-confidence";
+            } else if (confidenceValue >= 40) {
+                confidenceClass = "medium-confidence";
+            }
+
+            // Apply different styles for class values
+            const classValue = data["class"];
+            let classStyle = "";
+
+            if (classValue === "Referable") {
+                classStyle = "referable";
+            } else if (classValue === "Non_Referable") {
+                classStyle = "non-referable";
+            }
+
+            const tableRows = columns.map(column => {
+                if (column === "confidence") {
+                    return `<td class="${confidenceClass}">${data[column]}</td>`;
+                } else if (column === "class") {
+                    return `<td class="${classStyle}">${classMap[data[column]]}</td>`;
+                } else {
+                    return `<td>${data[column]}</td>`;
+                }
+            });
+
+            predictionBody.innerHTML += `<tr>${tableRows.join("")}</tr>`;
+
+            document.getElementById("prediction").style.display = "";
+        }
+
+        // Dropzone configuration
+        Dropzone.options.awesomeDropzone = {
+            init: function () {
+                this.on("addedfile", file => {
+                    console.log("A file has been added");
+
+                    // check for duplicate files
+                    if (this.files.length) {
+                        var _i, _len;
+                        for (_i = 0, _len = this.files.length; _i < _len - 1; _i++) // -1 to exclude current file
+                        {
+                            if (this.files[_i].name === file.name && this.files[_i].size === file.size && this.files[_i].lastModifiedDate.toString() === file.lastModifiedDate.toString()) {
+                                console.log("Duplicate file found!!!")
+                                this.removeFile(file);
+                            }
+                        }
+                    }
+
+                    // Check file extension
+                    const allowedExtensions = ["jpg", "jpeg", "png"];
+                    const fileExtension = file.name.split(".").pop().toLowerCase(); // Get extension in lowercase
+
+                    if (!allowedExtensions.includes(fileExtension)) {
+                        alert("Image must be jpg, jpeg, or png format!"); // Display error message
+                        this.removeFile(file); // Remove the invalid file from Dropzone
+                        return; // Exit the function if further processing is not required
+                    }
+                });
+            },
+            success: function (file, response) {
+                displayPrediction(response.data);
+            }
+            // error: function () {
+            //     alert("Error classifying image. Please try again.");
+            // }
+        }
+
+        // Initializing Dropzone
+        let imgDropzone = new Dropzone("#awesomeDropzone", {
+            paramName: "file",
+            maxFiles: 10,
+            preventDuplicates: true,
+        });
+
+        // Function to clear the form
+        function clearForm() {
+            // Reset Dropzone
+            imgDropzone.removeAllFiles();
+
+            // Clear prediction display
+            document.getElementById("predictionBody").innerHTML = "";
+        }
+    </script>
+</body>
+
+</html>
