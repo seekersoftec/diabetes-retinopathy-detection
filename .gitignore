@@ -160,6 +160,5 @@ notebooks/input/
 notebooks/original/
 notebooks/models/
 
-env/
 cache/
 logs/
