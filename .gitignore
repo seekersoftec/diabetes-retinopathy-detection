@@ -153,9 +153,6 @@ api_template/logs/fast_api.log
 /api_template/logs/
 /api_template/models/
 
-frontend/build/
-frontend/node_modules/
-
 notebooks/input/
 notebooks/original/
 notebooks/models/
