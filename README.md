@@ -1,4 +1,4 @@
-# Fast-API 🚀
+# Diabetes Retinopathy Detection App using Fast-API 🚀
 
 ### Why This ? 🤨
 
