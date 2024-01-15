@@ -42,6 +42,8 @@ class AppConfig(BaseModel):
     # DR classification model
     DR_CLASSIFICATION_MODEL: Path = MODELS_DIR.joinpath("desnet_final_model.h5")
 
+    # https://raw.githubusercontent.com/seekersoftec/diabetes-retinopathy-detection/main/models/desnet_final_model.h5?token=GHSAT0AAAAAACG43M2Q2HLLYZXDMJVOQICEZNFMX5A
+
 
 class GlobalConfig(BaseSettings):
     """Global configurations."""
