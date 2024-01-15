@@ -7,10 +7,10 @@ import cv2
 import tensorflow as tf
 import pandas as pd
 
-# import aiofiles
-# import os
+import aiofiles
+from aiofiles import os
 
-# from aiofiles import FileNotFoundError, PermissionError
+# import os
 
 
 # import ssl
@@ -25,29 +25,34 @@ IMG_SIZE = 320
 sigmaX = 10
 
 
-# async def clear_directory(directory_path):
-#     """Clears all files and subdirectories within the specified directory."""
-#     try:
-#         async with aiofiles.open(
-#             os.path.join(directory_path, ".keep"), "w"
-#         ) as f:  # Create an empty ".keep" file to prevent directory removal
-#             pass
+async def clear_directory(directory_path, remove_directory_itself=False):
+    """Clears all files and subdirectories within the specified directory.
 
-#         async for entry in aiofiles.os.scandir(directory_path):
-#             if entry.is_file():
-#                 await aiofiles.os.remove(entry.path)
-#             elif entry.is_dir():
-#                 await clear_directory(entry.path)  # Recursively clear subdirectories
+    Args:
+        directory_path (str): Path to the directory to clear.
+        remove_directory_itself (bool, optional): Whether to remove the directory itself as well. Defaults to False.
+    """
 
-#         # If you want to remove the directory itself as well:
-#         # await aiofiles.os.rmdir(directory_path)
+    try:
+        async with aiofiles.open(os.path.join(directory_path, ".keep"), "w") as f:
+            pass  # Create an empty ".keep" file to prevent directory removal
 
-#     except FileNotFoundError:
-#         print(f"Directory '{directory_path}' not found.")
-#     except PermissionError:
-#         print(f"Insufficient permissions to clear directory '{directory_path}'.")
-#     except Exception as e:
-#         print(f"An error occurred while clearing the directory: {e}")
+        async for entry in os.scandir(directory_path):
+            if entry.is_file():
+                await os.remove(entry.path)
+
+            if entry.is_dir():
+                await clear_directory(entry.path)  # Recursively clear subdirectories
+
+        if remove_directory_itself:
+            await os.rmdir(directory_path)
+
+    except FileNotFoundError:
+        print(f"Directory '{directory_path}' not found.")
+    except PermissionError:
+        print(f"Insufficient permissions to clear directory '{directory_path}'.")
+    except Exception as e:
+        print(f"An error occurred while clearing the directory: {e}")
 
 
 def load_ben_color(image):
@@ -129,6 +134,7 @@ class InferenceTask:
         result = await self.decode_predictions(label_preds)
         # logger.info(f"Result => {result}")
 
-        # await clear_directory(file_path)
+        # clear_directory(settings.APP_CONFIG.CACHE_DIR)
+        await os.remove(file_path)
 
         return result
