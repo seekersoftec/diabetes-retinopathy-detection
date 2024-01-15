@@ -2,7 +2,10 @@
 from pathlib import Path
 from typing import Optional
 
-from pydantic import BaseSettings, Field, BaseModel
+# from pydantic_settings import BaseSettings
+# from pydantic import Field, BaseModel, Extra
+
+from pydantic.v1 import BaseSettings, Field, BaseModel
 
 
 class AppConfig(BaseModel):
@@ -20,22 +23,24 @@ class AppConfig(BaseModel):
 
     BASE_DIR: Path = Path(__file__).resolve().parent.parent.parent
 
-    SETTINGS_DIR: Path = BASE_DIR.joinpath('settings')
+    SETTINGS_DIR: Path = BASE_DIR.joinpath("settings")
     SETTINGS_DIR.mkdir(parents=True, exist_ok=True)
 
-    LOGS_DIR: Path = BASE_DIR.joinpath('logs')
+    LOGS_DIR: Path = BASE_DIR.joinpath("logs")
     LOGS_DIR.mkdir(parents=True, exist_ok=True)
 
-    MODELS_DIR: Path = BASE_DIR.joinpath('models')
+    MODELS_DIR: Path = BASE_DIR.joinpath("models")
     MODELS_DIR.mkdir(parents=True, exist_ok=True)
 
     # local cache directory to store images or text file
-    CACHE_DIR: Path = BASE_DIR.joinpath('cache')
+    CACHE_DIR: Path = BASE_DIR.joinpath("cache")
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
     # question classification model to use
-    CLASSIFICATION_MODEL: Path = MODELS_DIR.joinpath(
-        'question_classification.sav')
+    CLASSIFICATION_MODEL: Path = MODELS_DIR.joinpath("question_classification.sav")
+
+    # DR desnet calssification model
+    DR_CLASSIFICATION_MODEL: Path = MODELS_DIR.joinpath("desnet_final_model.h5")
 
 
 class GlobalConfig(BaseSettings):
@@ -67,7 +72,6 @@ class GlobalConfig(BaseSettings):
 
     MOBILENET_V2: Optional[str] = None
     INCEPTION_V3: Optional[str] = None
-
 
     class Config:
         """Loads the dotenv file."""

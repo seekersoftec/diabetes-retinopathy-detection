@@ -1,0 +1,35 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+fastapi = "*"
+uvicorn = "*"
+nltk = "*"
+pandas = "*"
+numpy = "*"
+python-dotenv = "*"
+motor = "*"
+spacy = "*"
+wordninja = "*"
+contractions = "*"
+streamlit = "*"
+pyyaml = "*"
+boto3 = "*"
+tensorflow = "*"
+cutelog = "*"
+python-multipart = "*"
+gunicorn = "*"
+skrebate = "*"
+scipy = "*"
+scikit-learn = "*"
+pydantic-settings = "*"
+opencv-python = "*"
+seaborn = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.9"
+python_full_version = "3.9.2"
