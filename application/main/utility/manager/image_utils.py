@@ -18,4 +18,5 @@ class BasicImageUtils:
                         'Images': [0],
 	                    'image_name': [filename]
                     })
+        
         return image, file_path, dataframe
