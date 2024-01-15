@@ -39,7 +39,7 @@ class AppConfig(BaseModel):
     # question classification model to use
     CLASSIFICATION_MODEL: Path = MODELS_DIR.joinpath("question_classification.sav")
 
-    # DR desnet calssification model
+    # DR classification model
     DR_CLASSIFICATION_MODEL: Path = MODELS_DIR.joinpath("desnet_final_model.h5")
 
 
